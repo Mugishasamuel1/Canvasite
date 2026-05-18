@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mugisha Samuel — Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Mono:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8C97A;
+    --gold-dim: #8A6E30;
+    --ink: #0D0B08;
+    --paper: #F5F0E8;
+    --paper-dark: #EDE6D6;
+    --smoke: #2A2620;
+    --ash: #5A5248;
+    --cream: #FAF7F0;
+    --accent-red: #8B2E1A;
+    --accent-teal: #1A5C52;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Mono', monospace;
+    background: var(--ink);
+    color: var(--paper);
+    overflow-x: hidden;
+  }
+
+  /* ─── NOISE TEXTURE OVERLAY ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.6;
+  }
+
+  /* ─── CURSOR ─── */
+  .cursor {
+    width: 8px; height: 8px;
+    background: var(--gold);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.1s;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1px solid var(--gold);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transition: transform 0.15s ease, width 0.2s, height 0.2s, opacity 0.2s;
+    transform: translate(-50%, -50%);
+    opacity: 0.6;
+  }
+
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width: 3px; }
+  ::-webkit-scrollbar-track { background: var(--ink); }
+  ::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 2px; }
+
+  /* ─── PROGRESS BAR ─── */
+  #progress {
+    position: fixed; top: 0; left: 0;
+    height: 2px; background: var(--gold);
+    z-index: 9000; transition: width 0.1s;
+    width: 0%;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 800;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.5rem 3rem;
+    mix-blend-mode: normal;
+  }
+  nav::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(to bottom, rgba(13,11,8,0.9), transparent);
+    pointer-events: none;
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem; font-weight: 700;
+    letter-spacing: 0.15em;
+    color: var(--gold);
+    text-transform: uppercase;
+    position: relative;
+  }
+  .nav-links {
+    display: flex; gap: 2.5rem;
+    list-style: none;
+    position: relative;
+  }
+  .nav-links a {
+    font-size: 0.65rem; letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--paper);
+    text-decoration: none;
+    opacity: 0.6;
+    transition: opacity 0.3s, color 0.3s;
+  }
+  .nav-links a:hover { opacity: 1; color: var(--gold); }
+
+  /* ─── HERO ─── */
+  #hero {
+    height: 100vh;
+    display: flex; flex-direction: column;
+    justify-content: flex-end;
+    padding: 5rem 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: 
+      radial-gradient(ellipse 60% 70% at 70% 40%, rgba(201,168,76,0.08) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 20% 80%, rgba(26,92,82,0.06) 0%, transparent 60%),
+      var(--ink);
+  }
+
+  .hero-lines {
+    position: absolute; inset: 0;
+    background-image: 
+      linear-gradient(rgba(201,168,76,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(201,168,76,0.04) 1px, transparent 1px);
+    background-size: 80px 80px;
+    mask-image: radial-gradient(ellipse at 50% 50%, black 20%, transparent 80%);
+  }
+
+  .hero-number {
+    position: absolute;
+    top: 12rem; right: 3rem;
+    font-size: 22vw;
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    color: rgba(201,168,76,0.04);
+    line-height: 1;
+    user-select: none;
+    letter-spacing: -0.05em;
+  }
+
+  .hero-eyebrow {
+    font-size: 0.6rem; letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+    position: relative;
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    width: 40px; height: 1px;
+    background: var(--gold);
+    flex-shrink: 0;
+  }
+
+  .hero-name {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(4rem, 10vw, 9rem);
+    font-weight: 900;
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    position: relative;
+  }
+  .hero-name .line1 { display: block; }
+  .hero-name .line2 {
+    display: block;
+    font-style: italic;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--gold-light);
+    opacity: 0.7;
+  }
+
+  .hero-tagline {
+    margin-top: 2.5rem;
+    display: grid;
+    grid-template-columns: repeat(4, auto);
+    gap: 0;
+    max-width: 600px;
+  }
+  .hero-tag {
+    padding: 0.5rem 1rem;
+    border: 0.5px solid rgba(201,168,76,0.3);
+    font-size: 0.6rem; letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    text-align: center;
+  }
+  .hero-tag:not(:first-child) { border-left: none; }
+
+  .hero-scroll {
+    position: absolute; bottom: 3rem; right: 3rem;
+    display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+    font-size: 0.55rem; letter-spacing: 0.25em;
+    text-transform: uppercase; color: var(--ash);
+  }
+  .scroll-line {
+    width: 1px; height: 50px;
+    background: linear-gradient(to bottom, var(--gold-dim), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(0.8); }
+    50% { opacity: 1; transform: scaleY(1); }
+  }
+
+  /* ─── SECTION BASE ─── */
+  section {
+    position: relative;
+    padding: 8rem 3rem;
+  }
+
+  .section-label {
+    font-size: 0.55rem; letter-spacing: 0.4em;
+    text-transform: uppercase; color: var(--gold);
+    display: flex; align-items: center; gap: 1rem;
+    margin-bottom: 4rem;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1; max-width: 80px; height: 1px;
+    background: rgba(201,168,76,0.4);
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+
+  /* ─── ABOUT ─── */
+  #about {
+    background: var(--ink);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8rem;
+    align-items: center;
+  }
+
+  .about-left { }
+
+  .about-quote {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    font-weight: 300;
+    line-height: 1.5;
+    font-style: italic;
+    color: var(--paper);
+    margin: 2rem 0;
+    border-left: 2px solid var(--gold);
+    padding-left: 2rem;
+  }
+
+  .about-body {
+    font-size: 0.75rem;
+    line-height: 2;
+    color: var(--ash);
+    letter-spacing: 0.03em;
+  }
+
+  .about-right {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: rgba(201,168,76,0.15);
+  }
+
+  .stat-box {
+    background: var(--smoke);
+    padding: 2.5rem 2rem;
+    display: flex; flex-direction: column;
+    gap: 0.5rem;
+  }
+  .stat-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem; font-weight: 900;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 0.6rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--ash);
+  }
+
+  /* ─── TIMELINE / CHAPTER ─── */
+  .chapter {
+    background: var(--smoke);
+    position: relative;
+  }
+  .chapter-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .timeline {
+    position: relative;
+    margin-top: 5rem;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--gold-dim), transparent);
+  }
+
+  .timeline-item {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 4rem;
+    padding: 3rem 0 3rem 2rem;
+    border-bottom: 0.5px solid rgba(201,168,76,0.1);
+    position: relative;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  .timeline-item:hover { background: rgba(201,168,76,0.02); }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -4px; top: 3.5rem;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--gold-dim);
+    border: 1px solid var(--ink);
+    transition: background 0.3s, transform 0.3s;
+  }
+  .timeline-item:hover::before {
+    background: var(--gold);
+    transform: scale(1.5);
+  }
+
+  .timeline-date {
+    font-size: 0.6rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--gold-dim);
+    padding-top: 0.25rem;
+  }
+  .timeline-event-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem; font-weight: 700;
+    margin-bottom: 0.75rem;
+    line-height: 1.2;
+  }
+  .timeline-desc {
+    font-size: 0.72rem; line-height: 1.9;
+    color: var(--ash);
+  }
+  .timeline-badge {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.3rem 0.8rem;
+    border: 0.5px solid var(--gold-dim);
+    font-size: 0.55rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--gold);
+    background: rgba(201,168,76,0.06);
+  }
+
+  /* ─── MUSIC SECTION ─── */
+  #music {
+    background: var(--ink);
+  }
+
+  .music-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: rgba(201,168,76,0.1);
+    margin-top: 4rem;
+  }
+
+  .music-card {
+    background: var(--ink);
+    padding: 3rem 2.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.4s;
+    cursor: default;
+  }
+  .music-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+  }
+  .music-card:hover::before { transform: scaleX(1); }
+  .music-card:hover { background: var(--smoke); }
+
+  .music-card-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 5rem; font-weight: 900;
+    color: rgba(201,168,76,0.06);
+    line-height: 1;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.05em;
+  }
+  .music-card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem; font-weight: 700;
+    margin-bottom: 1rem; line-height: 1.2;
+  }
+  .music-card-body {
+    font-size: 0.7rem; line-height: 1.9;
+    color: var(--ash);
+  }
+
+  /* ─── HIGHLIGHT PULLQUOTE ─── */
+  .pullquote-section {
+    background: var(--gold);
+    padding: 6rem 3rem;
+    text-align: center;
+  }
+  .pullquote-text {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 700;
+    font-style: italic;
+    color: var(--ink);
+    max-width: 900px;
+    margin: 0 auto;
+    line-height: 1.3;
+  }
+  .pullquote-attr {
+    margin-top: 2rem;
+    font-size: 0.6rem; letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--ink);
+    opacity: 0.6;
+  }
+
+  /* ─── MUN ─── */
+  #mun {
+    background: var(--smoke);
+  }
+
+  .mun-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: start;
+    margin-top: 4rem;
+  }
+
+  .year-card {
+    display: flex;
+    gap: 2rem;
+    padding: 2rem 0;
+    border-bottom: 0.5px solid rgba(201,168,76,0.15);
+  }
+  .year-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem; font-weight: 900;
+    color: var(--gold-dim);
+    flex-shrink: 0;
+    line-height: 1;
+  }
+  .year-content {}
+  .year-role {
+    font-size: 0.7rem; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--gold);
+    margin-bottom: 0.5rem;
+  }
+  .year-desc {
+    font-size: 0.72rem; line-height: 1.9; color: var(--ash);
+  }
+
+  .committees {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1px;
+    background: rgba(201,168,76,0.1);
+    margin-top: 3rem;
+  }
+  .committee-box {
+    background: var(--smoke);
+    padding: 1.5rem;
+    text-align: center;
+    font-size: 0.65rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--gold-light);
+  }
+
+  /* ─── TECH ─── */
+  #tech {
+    background: var(--ink);
+  }
+
+  .tech-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    margin-top: 4rem;
+  }
+
+  .project-card {
+    border: 0.5px solid rgba(201,168,76,0.2);
+    padding: 3rem;
+    position: relative;
+    transition: border-color 0.3s;
+  }
+  .project-card:hover { border-color: rgba(201,168,76,0.6); }
+
+  .project-tag {
+    font-size: 0.55rem; letter-spacing: 0.25em;
+    text-transform: uppercase; color: var(--accent-teal);
+    margin-bottom: 1.5rem;
+  }
+  .project-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem; font-weight: 700;
+    margin-bottom: 1.5rem; line-height: 1.1;
+  }
+  .project-desc {
+    font-size: 0.72rem; line-height: 1.9; color: var(--ash);
+    margin-bottom: 2rem;
+  }
+
+  .tech-stack {
+    display: flex; flex-wrap: wrap; gap: 0.5rem;
+    margin-top: 1.5rem;
+  }
+  .tech-pill {
+    padding: 0.3rem 0.7rem;
+    background: rgba(201,168,76,0.06);
+    border: 0.5px solid rgba(201,168,76,0.2);
+    font-size: 0.58rem; letter-spacing: 0.1em;
+    color: var(--gold-dim);
+  }
+
+  .project-link {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-size: 0.6rem; letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    text-decoration: none;
+    margin-top: 1.5rem;
+    transition: gap 0.3s;
+  }
+  .project-link:hover { gap: 0.8rem; }
+  .project-link::after { content: '→'; }
+
+  /* ─── VALUES / ETHOS ─── */
+  #ethos {
+    background: var(--ink);
+    text-align: center;
+  }
+
+  .values-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    margin-top: 5rem;
+  }
+  .value-cell {
+    padding: 4rem 3rem;
+    border: 0.5px solid rgba(201,168,76,0.1);
+    position: relative;
+  }
+  .value-cell:not(:first-child) { border-left: none; }
+  .value-icon {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    display: block;
+  }
+  .value-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem; font-weight: 700;
+    margin-bottom: 1rem;
+    letter-spacing: -0.01em;
+  }
+  .value-desc {
+    font-size: 0.7rem; line-height: 2;
+    color: var(--ash);
+  }
+
+  /* ─── MATH ─── */
+  .math-strip {
+    background: rgba(201,168,76,0.04);
+    border: 0.5px solid rgba(201,168,76,0.1);
+    margin: 0 3rem;
+    padding: 3rem 4rem;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 4rem;
+    align-items: center;
+  }
+  .math-text {}
+  .math-label {
+    font-size: 0.55rem; letter-spacing: 0.3em;
+    text-transform: uppercase; color: var(--gold);
+    margin-bottom: 1rem;
+  }
+  .math-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem; font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+  .math-desc {
+    font-size: 0.72rem; line-height: 1.9; color: var(--ash);
+  }
+  .math-award {
+    text-align: center;
+    flex-shrink: 0;
+  }
+  .award-circle {
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    border: 1px solid var(--gold-dim);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 0.2rem;
+    margin: 0 auto;
+  }
+  .award-pi {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem; color: var(--gold);
+    line-height: 1;
+  }
+  .award-sub {
+    font-size: 0.5rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--gold-dim);
+  }
+
+  /* ─── CONTACT ─── */
+  #contact {
+    background: var(--smoke);
+    min-height: 70vh;
+    display: flex; flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .contact-bg-text {
+    position: absolute;
+    font-family: 'Playfair Display', serif;
+    font-size: 20vw; font-weight: 900;
+    color: rgba(201,168,76,0.03);
+    user-select: none;
+    white-space: nowrap;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    letter-spacing: -0.05em;
+  }
+
+  .contact-inner { position: relative; }
+
+  .contact-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 7vw, 6rem);
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 1.5rem;
+  }
+  .contact-title em {
+    font-style: italic;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--gold);
+  }
+
+  .contact-sub {
+    font-size: 0.7rem; line-height: 2;
+    color: var(--ash);
+    max-width: 480px;
+    margin: 0 auto 3rem;
+    letter-spacing: 0.03em;
+  }
+
+  .contact-links {
+    display: flex;
+    justify-content: center;
+    gap: 1px;
+    background: rgba(201,168,76,0.15);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .contact-link {
+    background: var(--smoke);
+    padding: 1.5rem 2.5rem;
+    text-align: center;
+    flex: 1;
+    text-decoration: none;
+    transition: background 0.3s;
+    color: var(--paper);
+  }
+  .contact-link:hover { background: rgba(201,168,76,0.08); }
+  .contact-link-label {
+    font-size: 0.55rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--gold);
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+  .contact-link-val {
+    font-size: 0.7rem; color: var(--paper);
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    padding: 2rem 3rem;
+    background: var(--ink);
+    display: flex; justify-content: space-between; align-items: center;
+    border-top: 0.5px solid rgba(201,168,76,0.1);
+  }
+  footer p {
+    font-size: 0.58rem; letter-spacing: 0.15em;
+    color: var(--ash);
+    text-transform: uppercase;
+  }
+
+  /* ─── SLOGAN BREAK ─── */
+  .slogan-break {
+    padding: 4rem 3rem;
+    text-align: center;
+    background: var(--ink);
+  }
+  .slogan-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+    font-style: italic;
+    font-weight: 300;
+    color: var(--gold-dim);
+    letter-spacing: 0.05em;
+  }
+
+  /* ─── ANIMATIONS ─── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.35s; }
+  .reveal-delay-4 { transition-delay: 0.5s; }
+
+  /* ─── HERO ANIMATION ─── */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .hero-eyebrow { animation: fadeInUp 1s ease 0.3s both; }
+  .hero-name { animation: fadeInUp 1s ease 0.5s both; }
+  .hero-tagline { animation: fadeInUp 1s ease 0.8s both; }
+
+  /* ─── MOBILE ─── */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    section { padding: 5rem 1.5rem; }
+    #about, .mun-grid, .tech-split { grid-template-columns: 1fr; gap: 3rem; }
+    .about-right { grid-template-columns: 1fr 1fr; }
+    .music-grid { grid-template-columns: 1fr; }
+    .values-row { grid-template-columns: 1fr; }
+    .value-cell:not(:first-child) { border-left: 0.5px solid rgba(201,168,76,0.1); border-top: none; }
+    .math-strip { margin: 0 1.5rem; grid-template-columns: 1fr; gap: 2rem; text-align: center; }
+    .contact-links { flex-direction: column; }
+    .hero-tagline { grid-template-columns: 1fr 1fr; }
+    .hero-number { font-size: 35vw; top: auto; bottom: 8rem; right: -1rem; }
+    .committees { grid-template-columns: 1fr; }
+  }
+
+  /* ─── HORIZONTAL RULE ─── */
+  .hr-gold {
+    border: none;
+    border-top: 0.5px solid rgba(201,168,76,0.2);
+    margin: 0;
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">M. Samuel</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#music">Music</a></li>
+    <li><a href="#mun">Leadership</a></li>
+    <li><a href="#tech">Technology</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-lines"></div>
+  <div class="hero-number">S</div>
+
+  <div style="position:relative;">
+    <div class="hero-eyebrow">University Portfolio · Rwanda · 2025</div>
+
+    <h1 class="hero-name">
+      <span class="line1">Mugisha</span>
+      <span class="line2">Samuel</span>
+    </h1>
+
+    <div class="hero-tagline">
+      <div class="hero-tag">Musician</div>
+      <div class="hero-tag">Programmer</div>
+      <div class="hero-tag">Delegate</div>
+      <div class="hero-tag">Builder</div>
+    </div>
+  </div>
+
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    Scroll
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-left reveal">
+    <div class="section-label">01 — Identity</div>
+    <h2 class="section-title">One person.<br>Many languages.</h2>
+
+    <blockquote class="about-quote">
+      "I am because we are."
+    </blockquote>
+
+    <p class="about-body">
+      I am a Senior 6 student at Agahozo-Shalom Youth Village in Rwanda — a place that transforms
+      lives. My work spans the stage and the screen, the debate floor and the farmland, the music
+      studio and the mathematics classroom. I do not compartmentalize these worlds. They are all
+      expressions of the same belief: that creativity and rigor, art and logic, community and
+      ambition are not opposites — they are one.
+      <br><br>
+      I build technology to solve real problems for farmers. I perform original music at corporate
+      events for thousands. I chair diplomatic committees. I wash dishes. Every one of these is,
+      to me, equally sacred.
+    </p>
+  </div>
+
+  <div class="about-right reveal reveal-delay-2">
+    <div class="stat-box">
+      <div class="stat-number">3</div>
+      <div class="stat-label">Years at GHAMUN</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-number">5+</div>
+      <div class="stat-label">Live Performances</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-number">2</div>
+      <div class="stat-label">Platforms Built</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-number">1</div>
+      <div class="stat-label">Original Single</div>
+    </div>
+  </div>
+</section>
+
+<hr class="hr-gold">
+
+<!-- PULLQUOTE -->
+<div class="pullquote-section">
+  <p class="pullquote-text reveal">
+    "The discipline of logic is just as important as the freedom of art. I apply the same standard of excellence to both."
+  </p>
+  <p class="pullquote-attr reveal reveal-delay-2">Mugisha Samuel</p>
+</div>
+
+<!-- TIMELINE CHAPTER -->
+<section class="chapter" id="journey">
+  <div class="chapter-inner">
+    <div class="section-label reveal">02 — The Arc</div>
+    <h2 class="section-title reveal">A story told<br>chronologically.</h2>
+
+    <div class="timeline">
+
+      <div class="timeline-item reveal">
+        <div class="timeline-date">2023 · Foundation</div>
+        <div>
+          <div class="timeline-event-title">First step onto the GHAMUN floor</div>
+          <p class="timeline-desc">As a first-year delegate at Green Hills Academy MUN, I immersed myself in international law, learning to listen before I spoke. This year was about absorbing — the grammar of diplomacy, the patience of negotiation, the art of building coalitions in a room of strangers. I left with one thing: the hunger to come back better.</p>
+          <span class="timeline-badge">Leadership · Diplomacy</span>
+        </div>
+      </div>
+
+      <div class="timeline-item reveal">
+        <div class="timeline-date">2023 · Recognition</div>
+        <div>
+          <div class="timeline-event-title">Pi Day Mathematics Award</div>
+          <p class="timeline-desc">Presented by a representative from the University of Rwanda and my School Principal, this award marked something deeper than an academic win. It confirmed that the analytical muscle I train every day in mathematics is the same muscle I use when composing a melody — both are pattern recognition at their core.</p>
+          <span class="timeline-badge">Mathematics · Excellence</span>
+        </div>
+      </div>
+
+      <div class="timeline-item reveal">
+        <div class="timeline-date">2024 · Breakthrough</div>
+        <div>
+          <div class="timeline-event-title">Ecobank End-of-Year Staff Performance</div>
+          <p class="timeline-desc">A corporate hall. A massive audience. Davido's "Aye" — chosen deliberately for its crowd energy. When the room erupted, something shifted in me. This was not a school stage. This was the industry. And I was ready. This performance remains the single most formative artistic moment of my journey.</p>
+          <span class="timeline-badge">Music · Stage Presence</span>
+        </div>
+      </div>
+
+      <div class="timeline-item reveal">
+        <div class="timeline-date">2024 · Research</div>
+        <div>
+          <div class="timeline-event-title">GHAMUN — Three winning resolutions</div>
+          <p class="timeline-desc">At Green Hills Academy MUN for the second time, I returned not as a learner but as a strategist. I drafted three winning resolutions in UNDP and C40, mastering data-driven argument construction and the precision of persuasive writing under parliamentary pressure.</p>
+          <span class="timeline-badge">Research · Writing</span>
+        </div>
+      </div>
+
+      <div class="timeline-item reveal">
+        <div class="timeline-date">2024 · Creation</div>
+        <div>
+          <div class="timeline-event-title">EZA for Farmers — Platform Launched</div>
+          <p class="timeline-desc">I built EZA not because it was assigned, but because I looked around and saw a gap. Rwandan farmers needed modern agricultural guidance. I built them a platform — PHP, MySQL, JavaScript — that delivers training virtually and one-on-one. This is technology with a face and a purpose.</p>
+          <span class="timeline-badge">Innovation · Social Impact</span>
+        </div>
+      </div>
+
+      <div class="timeline-item reveal">
+        <div class="timeline-date">2025 · Leadership</div>
+        <div>
+          <div class="timeline-event-title">ASYVMUN Chair — leading the room</div>
+          <p class="timeline-desc">Chairing my own MUN conference was the transition from advocate to architect. I moderated heated debates, mentored first-time delegates, and held the room's decorum — not with authority, but with earned trust. I understood that a great chair, like a great performer, must make the room feel safe enough to be brilliant.</p>
+          <span class="timeline-badge">Leadership · Mentorship</span>
+        </div>
+      </div>
+
+      <div class="timeline-item reveal">
+        <div class="timeline-date">2025 · Voice</div>
+        <div>
+          <div class="timeline-event-title">Original Single: "Dollars"</div>
+          <p class="timeline-desc">My debut single — a fusion of Afro-pop rhythms and personal narrative. "Dollars" is not about money. It is about the hours you put in when no one is watching. It is about wanting something so badly you can taste it. Writing it forced me to define my sound, my story, and my artistic identity.</p>
+          <span class="timeline-badge">Songwriting · Production</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- MUSIC SECTION -->
+<section id="music">
+  <div class="section-label reveal">03 — The Stage</div>
+  <h2 class="section-title reveal">Music is not<br>what I do. It is<br>how I think.</h2>
+
+  <div class="music-grid">
+    <div class="music-card reveal">
+      <div class="music-card-num">01</div>
+      <h3 class="music-card-title">Agahozo & Friends Concert</h3>
+      <p class="music-card-body">Performing at the concert of my own village was personal in the truest sense. Every brother and sister in that crowd had shared the same corridors, the same meals, the same dreams deferred and reclaimed. The stage that night was not a platform — it was a promise. Music as a returning of everything the community had given me.</p>
+    </div>
+
+    <div class="music-card reveal reveal-delay-1">
+      <div class="music-card-num">02</div>
+      <h3 class="music-card-title">Ecobank Corporate Showcase</h3>
+      <p class="music-card-body">The largest audience I had ever faced. A room of corporate professionals expecting entertainment — and I gave them something to feel. Choosing "Aye" was a calculated risk that paid off in a standing moment. I learned that a performer's greatest skill is reading a room before the first note lands.</p>
+    </div>
+
+    <div class="music-card reveal reveal-delay-2">
+      <div class="music-card-num">03</div>
+      <h3 class="music-card-title">Iwacu Fashion Show</h3>
+      <p class="music-card-body">Music at a fashion show must do something specific: it must inhabit the space between the garments and the gaze of the audience. I performed as the sonic architecture of an evening built on Rwandan identity and design. It sharpened my understanding of music as atmosphere, not just entertainment.</p>
+    </div>
+
+    <div class="music-card reveal">
+      <div class="music-card-num">04</div>
+      <h3 class="music-card-title">Melodies in Motion</h3>
+      <p class="music-card-body">A student-organized concert — and the most professionally executed show I had been part of at the time. Transitioning from intimate acoustic passages to high-energy peaks, I found my natural range as a live performer: versatile, dynamic, and always in conversation with the crowd.</p>
+    </div>
+
+    <div class="music-card reveal reveal-delay-1">
+      <div class="music-card-num">05</div>
+      <h3 class="music-card-title">ASYV Village Time — Weekly</h3>
+      <p class="music-card-body">Every Friday, students at Agahozo-Shalom showcase their talents. I used this not as a performance slot but as a laboratory — testing new material, refining stage movement, learning to hold attention in a space where the audience knows every performer personally. The most demanding crowd of all.</p>
+    </div>
+
+    <div class="music-card reveal reveal-delay-2">
+      <div class="music-card-num">06</div>
+      <h3 class="music-card-title">"Dollars" — Original Single</h3>
+      <p class="music-card-body">Writing "Dollars" was the hardest and most necessary thing I have done musically. Every lyric had to be true. Every beat had to serve the narrative. The result is a song about ambition stripped of its glamour — the unglamorous daily work of becoming who you intend to be.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SLOGAN BREAK -->
+<div class="slogan-break">
+  <p class="slogan-text reveal">"I am because we are" — Ubuntu as a creative philosophy</p>
+</div>
+
+<!-- MUN -->
+<section id="mun">
+  <div class="section-label reveal">04 — The Floor</div>
+  <h2 class="section-title reveal">Diplomacy taught me<br>what the stage could not.</h2>
+
+  <div class="mun-grid">
+    <div>
+      <div class="year-card reveal">
+        <div class="year-num">23</div>
+        <div class="year-content">
+          <div class="year-role">The Foundation</div>
+          <p class="year-desc">Immersed in international law. Learning that listening is itself a form of power. First exposure to parliamentary procedure and the architecture of a winning resolution.</p>
+        </div>
+      </div>
+      <div class="year-card reveal reveal-delay-1">
+        <div class="year-num">24</div>
+        <div class="year-content">
+          <div class="year-role">The Researcher</div>
+          <p class="year-desc">Three winning resolutions in UNDP and C40. Mastered data-driven argument construction. Attended GHAMUN twice. Discovered that persuasion is not rhetoric — it is precision in the service of empathy.</p>
+        </div>
+      </div>
+      <div class="year-card reveal reveal-delay-2">
+        <div class="year-num">25</div>
+        <div class="year-content">
+          <div class="year-role">The Leader</div>
+          <p class="year-desc">Transitioned to Chair at ASYVMUN. Prepared and organized the conference itself. Chaired committees: UNEP, SOCHUM, UNICEF. Learned that the best leaders speak least and enable most.</p>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <p class="about-body reveal" style="margin-bottom:2rem;">
+        Three consecutive years at Green Hills Academy MUN. Each year a different version of me walked onto that floor — and each year I left having outgrown the version who arrived. This is what I look for in every discipline I pursue: not completion, but a trajectory.
+        <br><br>
+        Chairing ASYVMUN was the culmination — not of a committee, but of a way of leading. Parliamentary procedure demands that you hold two things at once: the structure of the debate and the humanity of the debaters. I tried to hold both.
+      </p>
+
+      <div class="section-label reveal" style="margin-bottom:1rem;">Committees Chaired</div>
+      <div class="committees reveal">
+        <div class="committee-box">UNEP</div>
+        <div class="committee-box">SOCHUM</div>
+        <div class="committee-box">UNICEF</div>
+        <div class="committee-box">UNDP</div>
+        <div class="committee-box">C40</div>
+        <div class="committee-box">ASYVMUN</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MATH -->
+<div class="math-strip reveal">
+  <div class="math-text">
+    <div class="math-label">05 — The Proof</div>
+    <h3 class="math-title">Pi Day Mathematics Champion</h3>
+    <p class="math-desc">
+      Presented by a representative from the University of Rwanda and my School Principal at ASYV.
+      This was not merely an academic result — it was confirmation that the discipline I bring to
+      performance and to debate lives equally in equations. Logic and art share the same root:
+      they are both the search for pattern, for truth, for something that holds.
+    </p>
+  </div>
+  <div class="math-award">
+    <div class="award-circle">
+      <div class="award-pi">π</div>
+      <div class="award-sub">Day Champion</div>
+    </div>
+  </div>
+</div>
+
+<!-- TECH -->
+<section id="tech">
+  <div class="section-label reveal">06 — The Build</div>
+  <h2 class="section-title reveal">Code is the newest<br>instrument I play.</h2>
+
+  <div class="tech-split">
+    <div class="project-card reveal">
+      <div class="project-tag">Live · Agriculture Tech</div>
+      <h3 class="project-name">EZA for Farmers</h3>
+      <p class="project-desc">
+        A platform I designed and built entirely to serve Rwandan farmers who lack access to modern agricultural knowledge. EZA delivers practical farming techniques through both virtual modules and one-on-one facilitated sessions — meeting farmers exactly where they are, technically and geographically.
+        <br><br>
+        This is what I mean when I say I build platforms that solve real challenges, starting from my local area and my country Rwanda.
+      </p>
+      <div class="tech-stack">
+        <span class="tech-pill">PHP</span>
+        <span class="tech-pill">MySQL</span>
+        <span class="tech-pill">JavaScript</span>
+        <span class="tech-pill">Bootstrap</span>
+        <span class="tech-pill">Node.js</span>
+      </div>
+      <a class="project-link" href="https://ezaforfarmers.netlify.app/" target="_blank">View live platform</a>
+    </div>
+
+    <div class="project-card reveal reveal-delay-2">
+      <div class="project-tag">Collaborative · Arts Platform</div>
+      <h3 class="project-name">ASYV Made Arts</h3>
+      <p class="project-desc">
+        A school platform built in collaboration with the visitors team to showcase the artistic work of ASYV students to the world. More than a gallery — an act of amplification. Students at ASYV create extraordinary things with extraordinary lives behind them. This platform makes sure the world knows.
+        <br><br>
+        It was also an exercise in co-creation: technology built not alone but in service of a community, shaped by the needs of the people who would use it.
+      </p>
+      <div class="tech-stack">
+        <span class="tech-pill">PHP</span>
+        <span class="tech-pill">MySQL</span>
+        <span class="tech-pill">JavaScript</span>
+        <span class="tech-pill">Express.js</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VALUES -->
+<section id="ethos">
+  <div class="section-label reveal" style="justify-content:center;">07 — The Core</div>
+  <h2 class="section-title reveal">What drives everything.</h2>
+
+  <div class="values-row">
+    <div class="value-cell reveal">
+      <span class="value-icon">♩</span>
+      <h3 class="value-name">Create to Uplift</h3>
+      <p class="value-desc">Every project, every performance, every resolution I draft is in service of something larger than me. Art that does not reach someone is noise. Technology that does not help someone is unused. I create with a destination in mind.</p>
+    </div>
+    <div class="value-cell reveal reveal-delay-1">
+      <span class="value-icon">◎</span>
+      <h3 class="value-name">Discipline as Freedom</h3>
+      <p class="value-desc">Mathematics taught me that constraints are not limits — they are the shape of the solution space. Whether I am debugging code, drafting a resolution, or choosing the right note, I have learned that excellence lives inside structure, not outside it.</p>
+    </div>
+    <div class="value-cell reveal reveal-delay-2">
+      <span class="value-icon">∞</span>
+      <h3 class="value-name">Ubuntu in Practice</h3>
+      <p class="value-desc">I wash dishes not as humility but as the philosophy of Tikkun Olam made physical. The stage, the kitchen, the debate floor — each one is the same act: showing up for your community. I am because we are. That is not a slogan. It is my operating system.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL PULLQUOTE -->
+<div class="pullquote-section" style="background:var(--smoke);">
+  <p class="pullquote-text reveal" style="color:var(--gold-light);">
+    "Whether I am standing in the spotlight or working behind the scenes, I carry the same mission: to combine professional excellence with a servant's heart."
+  </p>
+  <p class="pullquote-attr reveal reveal-delay-2" style="color:var(--gold-dim);">Mugisha Samuel — Closing Reflection</p>
+</div>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-bg-text">Samuel</div>
+  <div class="contact-inner">
+    <div class="section-label reveal" style="justify-content:center;">08 — Connect</div>
+    <h2 class="contact-title reveal">Let's build<br><em>something</em>.</h2>
+    <p class="contact-sub reveal reveal-delay-1">
+      I am a Senior 6 student based in Rwamagana, Rubona, Rwanda — currently seeking university admission. I would love to connect with institutions that value the whole person.
+    </p>
+
+    <div class="contact-links reveal reveal-delay-2">
+      <a class="contact-link" href="tel:+250794922884">
+        <span class="contact-link-label">Phone</span>
+        <span class="contact-link-val">+250 794 922 884</span>
+      </a>
+      <a class="contact-link" href="mailto:smugisha443@gmail.com">
+        <span class="contact-link-label">Email</span>
+        <span class="contact-link-val">smugisha443@gmail.com</span>
+      </a>
+      <a class="contact-link" href="https://ezaforfarmers.netlify.app/" target="_blank">
+        <span class="contact-link-label">Portfolio</span>
+        <span class="contact-link-val">EZA Platform →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>Mugisha Samuel · Rwanda, Rwamagana · 2025</p>
+  <p>Musician · Programmer · Delegate · Builder</p>
+</footer>
+
+<script>
+// ─── CURSOR ───
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cursor.style.left = (mx - 4) + 'px';
+  cursor.style.top = (my - 4) + 'px';
+});
+
+function animateRing() {
+  rx += (mx - rx) * 0.12;
+  ry += (my - ry) * 0.12;
+  ring.style.left = (rx - 18) + 'px';
+  ring.style.top = (ry - 18) + 'px';
+  requestAnimationFrame(animateRing);
+}
+animateRing();
+
+// ─── PROGRESS BAR ───
+const progressBar = document.getElementById('progress');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement.scrollHeight - window.innerHeight;
+  const p = (window.scrollY / h) * 100;
+  progressBar.style.width = p + '%';
+});
+
+// ─── REVEAL ON SCROLL ───
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+
+reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
